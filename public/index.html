@@ -239,16 +239,29 @@
 
     async function attemptLogin() {
       const password = document.getElementById('admin-pass').value;
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-      const data = await res.json();
-      if (data.success) {
-        location.reload();
-      } else {
-        document.getElementById('login-err').classList.remove('hidden');
+      const btn = document.querySelector('.login-card .btn');
+      btn.textContent = 'Verifying...';
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Immediately hide overlay and load data
+          document.getElementById('login-overlay').style.opacity = '0';
+          setTimeout(() => {
+            document.getElementById('login-overlay').classList.add('hidden');
+            fetchData();
+          }, 500);
+        } else {
+          document.getElementById('login-err').classList.remove('hidden');
+          btn.textContent = 'Grant Access';
+        }
+      } catch(err) {
+        alert('Server Error during login');
+        btn.textContent = 'Grant Access';
       }
     }
 
@@ -259,14 +272,20 @@
 
     // ═══════════════════════════════════════════════════════ DATA HANDLERS
     async function fetchData() {
+      const container = document.getElementById('editor-container');
+      container.innerHTML = '<div style="padding: 20px; color: var(--text-muted);">Synchronizing with database...</div>';
+      
       try {
         const res = await fetch('/api/data');
+        if (!res.ok) throw new Error('Fetch failed');
+        
         const data = await res.json();
         
         // If DB is empty, use the template
         if (!data || Object.keys(data).length === 0) {
+          console.log('Database empty, initializing with default template...');
           siteData = JSON.parse(JSON.stringify(defaultTemplate));
-          // Proactively save the template to DB
+          // Save the default template to DB so it persists
           await saveEverything(true);
         } else {
           siteData = data;
@@ -274,7 +293,9 @@
         
         renderActiveTab();
       } catch (err) {
-        showToast("Error loading data from server", true);
+        console.error('Fetch Error:', err);
+        container.innerHTML = '<div style="padding: 20px; color: var(--danger);">Failed to load data. Please check if MONGODB_URI is set.</div>';
+        showToast("Error loading data", true);
       }
     }
 
