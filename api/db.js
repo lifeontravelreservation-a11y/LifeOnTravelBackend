@@ -8,11 +8,19 @@ async function connectToDatabase() {
   }
   
   if (!process.env.MONGODB_URI) {
+    console.error('DATABASE ERROR: MONGODB_URI is missing from environment variables!');
     throw new Error('Please define the MONGODB_URI environment variable');
   }
 
-  const db = await mongoose.connect(process.env.MONGODB_URI);
-  isConnected = db.connections[0].readyState;
+  try {
+    console.log('Connecting to MongoDB...');
+    const db = await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = db.connections[0].readyState;
+    console.log('MongoDB connection status:', isConnected);
+  } catch (error) {
+    console.error('CRITICAL DATABASE ERROR:', error.message);
+    throw error;
+  }
 }
 
 const DataSchema = new mongoose.Schema({
