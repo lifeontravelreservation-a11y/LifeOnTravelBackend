@@ -12,8 +12,8 @@ module.exports = async (req, res) => {
 
     try {
       let dataDoc = await Data.findOne();
-      if (!dataDoc) {
-        // Return default structure if empty
+      if (!dataDoc || !dataDoc.content) {
+        // Return empty object if no doc or no content
         return res.status(200).json({});
       }
       return res.status(200).json(dataDoc.content);
