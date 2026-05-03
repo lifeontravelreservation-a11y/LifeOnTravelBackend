@@ -143,6 +143,8 @@
       <p style="font-size: 12px; color: var(--text-muted); margin: 5px 0 0;">Management Suite</p>
     </div>
     <nav id="sidebar-nav">
+      <div class="nav-item" data-tab="site"><span>⚙️</span> Brand & Settings</div>
+      <div class="nav-item" data-tab="navbar"><span>⚓</span> Navigation</div>
       <div class="nav-item active" data-tab="hero"><span>⌂</span> Home / Hero</div>
       <div class="nav-item" data-tab="stats"><span>📊</span> Vital Stats</div>
       <div class="nav-item" data-tab="destinations"><span>🗺️</span> Destinations</div>
@@ -152,7 +154,8 @@
       <div class="nav-item" data-tab="stories"><span>📱</span> Web Stories</div>
       <div class="nav-item" data-tab="testimonials"><span>💬</span> Testimonials</div>
       <div class="nav-item" data-tab="blog"><span>✍️</span> Field Journal</div>
-      <div class="nav-item" data-tab="contact"><span>📞</span> Contact Info</div>
+      <div class="nav-item" data-tab="cta"><span>📞</span> CTA Section</div>
+      <div class="nav-item" data-tab="footer"><span>👣</span> Footer</div>
     </nav>
     <div style="margin-top: auto; padding: 20px 25px;">
        <button class="btn btn-outline" style="width: 100%;" onclick="logout()">Logout</button>
@@ -179,52 +182,100 @@
 
     // ═══════════════════════════════════════════════════════ DEFAULT STRUCTURE
     const defaultTemplate = {
+      site: {
+        logoMark: "✦",
+        logoText: "Life On Travel",
+        phone: "+919999999999",
+        phoneDisplay: "+91 99999 99999",
+        email: "hello@lifeintravel.com",
+        whatsappNumber: "919999999999",
+        whatsappMessage: "Hi, I'd like to enquire about a safari package",
+        copyrightYear: "2025"
+      },
+      navbar: {
+        links: [
+          { label: "Destinations", href: "#destinations" },
+          { label: "Packages",     href: "#packages" },
+          { label: "Gallery",      href: "#gallery" },
+          { label: "Stories",      href: "#stories" },
+          { label: "Journal",      href: "#blog" }
+        ],
+        ctaLabel: "Enquire",
+        ctaHref: "#contact"
+      },
       hero: {
-        eyebrow: "Curated Safari Experiences",
-        heading: "Where the Wild Holds Its Breath",
-        sub: "Immersive journeys into Earth's last untouched jungles — crafted for the discerning explorer.",
+        eyebrowText: "Curated Safari Experiences",
+        headingLine1: "Where the Wild",
+        headingLine2Em: "Holds Its Breath",
+        subtext: "Immersive journeys into Earth's last untouched jungles — crafted for the discerning explorer.",
+        cta: [
+          { label: "Explore Packages", href: "#packages" },
+          { label: "View Destinations", href: "#destinations" }
+        ],
         slides: [
-          { url: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920&q=80" },
-          { url: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1920&q=80" }
+          { image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920&q=80", alt: "Jungle safari at dusk" },
+          { image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1920&q=80", alt: "African savannah" }
         ]
       },
       stats: [
-        { num: "1200", suffix: "+", label: "Safaris Conducted" },
-        { num: "48", suffix: "", label: "Wildlife Destinations" },
-        { num: "15", suffix: " yrs", label: "Expert Experience" },
-        { num: "98", suffix: "%", label: "Guest Satisfaction" }
+        { number: 1200, suffix: "+", label: "Safaris Conducted" },
+        { number: 48, suffix: "", label: "Wildlife Destinations" },
+        { number: 15, suffix: " yrs", label: "Expert Experience" },
+        { number: 98, suffix: "%", label: "Guest Satisfaction" }
       ],
-      destinations: [
-        { title: "Ranthambore", desc: "The land of the Royal Bengal Tiger.", image: "https://images.unsplash.com/photo-1581852017103-68ac655037b9?w=800" }
-      ],
-      packages: [
-        { title: "Tiger Trails", desc: "A 5-day immersive tiger safari.", image: "https://images.unsplash.com/photo-1504173010664-32509107de11?w=800" }
-      ],
-      pricing: [
-        { name: "Explorer", price: "999", features: ["Naturalist Guide", "Stay included"] }
-      ],
-      gallery: [
-        { url: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800" }
-      ],
-      stories: [
-        { title: "Wild Mornings", image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400", slides: [] }
-      ],
-      testimonials: [
-        { quote: "Best safari of my life!", author: "John Doe", avatar: "https://i.pravatar.cc/150?u=1" }
-      ],
-      blog: [
-        { title: "Tracking Tigers", excerpt: "How we track the elusive cats...", image: "https://images.unsplash.com/photo-1581852017103-68ac655037b9?w=800", link: "#" }
-      ],
-      contact: {
-        whatsapp: "919999999999",
-        phone: "+91 99999 99999",
-        email: "hello@lifeintravel.com",
-        location: "Mumbai, India",
-        social: {
-          instagram: "#",
-          facebook: "#",
-          youtube: "#"
-        }
+      destinations: {
+        sectionEyebrow: "Explore the Wild",
+        sectionTitle: "Our Destinations",
+        sectionDesc: "Hand-picked wilderness corridors across the globe.",
+        items: [
+          { title: "Jim Corbett", region: "Uttarakhand, India", type: "Tiger Reserve", duration: "3–5 Days", image: "https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=600&q=80", slug: "jim-corbett" }
+        ]
+      },
+      packages: {
+        sectionEyebrow: "Tailored for You",
+        sectionTitle: "Safari Packages",
+        items: [
+          { title: "The Corbett Immersion", type: "Tiger Safari", description: "A six-day deep dive...", duration: "6 Days / 5 Nights", groupSize: "Up to 8", difficulty: "Easy", price: "₹42,000", priceNote: "/person", image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=800&q=80", slug: "corbett-immersion" }
+        ]
+      },
+      pricing: {
+        sectionTitle: "Choose Your Journey",
+        plans: [
+          { name: "Explorer", description: "Perfect for solo travelers.", currency: "₹", price: "28,000", period: "per person", recommended: false, ctaLabel: "Book Explorer", features: [{ text: "Shared jeep safari", included: true }] }
+        ]
+      },
+      gallery: {
+        sectionTitle: "The Wild in Frame",
+        items: [
+          { image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=600&q=80", alt: "Tiger at dawn", caption: "Bengal Tiger" }
+        ]
+      },
+      stories: {
+        sectionTitle: "Web Stories",
+        items: [
+          { title: "Dawn of the Tiger", label: "Jim Corbett", coverImage: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=400&q=80", slides: [{ image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=900&q=80", title: "Dawn", text: "..." }] }
+        ]
+      },
+      testimonials: {
+        sectionTitle: "What Travellers Say",
+        items: [
+          { text: "Life In Travel redefined what I thought a safari could be.", name: "Priya Malhotra", meta: "Mumbai", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&q=80", stars: 5 }
+        ]
+      },
+      blog: {
+        sectionTitle: "From the Wild",
+        posts: [
+          { title: "The Art of Reading Tiger Pug Marks", category: "Field Notes", excerpt: "...", date: "March 15, 2025", image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=800&q=80", slug: "tiger-pug-marks" }
+        ]
+      },
+      cta: {
+        eyebrow: "Begin Your Journey",
+        title: "The Wilderness",
+        titleEm: "Awaits You",
+        description: "Let our experts craft your perfect safari."
+      },
+      footer: {
+        tagline: "Crafting extraordinary encounters with the wild since 2009."
       }
     };
 
@@ -249,7 +300,6 @@
         });
         const data = await res.json();
         if (data.success) {
-          // Immediately hide overlay and load data
           document.getElementById('login-overlay').style.opacity = '0';
           setTimeout(() => {
             document.getElementById('login-overlay').classList.add('hidden');
@@ -281,22 +331,37 @@
         
         const data = await res.json();
         
-        // If DB is empty, use the template
         if (!data || Object.keys(data).length === 0) {
-          console.log('Database empty, initializing with default template...');
           siteData = JSON.parse(JSON.stringify(defaultTemplate));
-          // Save the default template to DB so it persists
           await saveEverything(true);
         } else {
-          siteData = data;
+          // Merge fetched data with defaultTemplate to ensure all fields exist
+          siteData = mergeDeep(JSON.parse(JSON.stringify(defaultTemplate)), data);
         }
         
         renderActiveTab();
       } catch (err) {
         console.error('Fetch Error:', err);
-        container.innerHTML = '<div style="padding: 20px; color: var(--danger);">Failed to load data. Please check if MONGODB_URI is set.</div>';
+        container.innerHTML = '<div style="padding: 20px; color: var(--danger);">Failed to load data. Please check connection.</div>';
         showToast("Error loading data", true);
       }
+    }
+
+    function mergeDeep(target, source) {
+      if (typeof target !== 'object' || target === null) return source;
+      if (typeof source !== 'object' || source === null) return source;
+      
+      for (const key in source) {
+        if (Array.isArray(source[key])) {
+          target[key] = source[key];
+        } else if (typeof source[key] === 'object') {
+          if (!target[key]) target[key] = {};
+          mergeDeep(target[key], source[key]);
+        } else {
+          target[key] = source[key];
+        }
+      }
+      return target;
     }
 
     async function saveEverything(isSilent = false) {
@@ -330,85 +395,104 @@
       container.innerHTML = '';
       
       const titleEl = document.getElementById('active-tab-title');
-      const tabData = siteData[currentTab];
-      
-      // Update Title
       const navItem = document.querySelector(`[data-tab="${currentTab}"]`);
       titleEl.textContent = navItem ? navItem.textContent.split(' ').slice(1).join(' ') : currentTab;
 
+      const tabData = siteData[currentTab];
+      if (!tabData) return;
+
       if (currentTab === 'hero') renderHero(container, tabData);
-      else if (currentTab === 'contact') renderContact(container, tabData);
       else if (Array.isArray(tabData)) renderArrayList(container, tabData, currentTab);
+      else if (typeof tabData === 'object') {
+          // Check for common array keys
+          const arrayKey = ['items', 'posts', 'plans', 'links', 'cta', 'slides', 'buttons', 'exploreLinks', 'companyLinks', 'legalLinks', 'socialLinks'].find(k => Array.isArray(tabData[k]));
+          if (arrayKey) {
+              renderObjectWithArray(container, tabData, currentTab, arrayKey);
+          } else {
+              renderGenericFields(container, tabData, currentTab);
+          }
+      }
+    }
+
+    function renderGenericFields(container, data, path) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="card-title">${path.toUpperCase()} Configuration</div>`;
+      
+      for (const key in data) {
+        if (typeof data[key] === 'object' && !Array.isArray(data[key])) {
+          // Nested object (like social)
+          for (const subKey in data[key]) {
+             card.appendChild(createField(key + '.' + subKey, data[key][subKey], (val) => {
+               data[key][subKey] = val;
+             }));
+          }
+          continue;
+        }
+        if (Array.isArray(data[key])) continue; // Handle arrays separately
+        
+        card.appendChild(createField(key, data[key], (val) => {
+          data[key] = val;
+        }));
+      }
+      container.appendChild(card);
+    }
+
+    function createField(label, value, onChange) {
+      const group = document.createElement('div');
+      group.className = 'form-group';
+      const isLong = value && value.length > 50;
+      group.innerHTML = `
+        <label>${label}</label>
+        ${isLong ? `<textarea>${value}</textarea>` : `<input type="text" value="${value || ''}">`}
+      `;
+      const input = group.querySelector('input, textarea');
+      input.onchange = (e) => onChange(e.target.value);
+      return group;
     }
 
     function renderHero(container, data) {
-      const html = `
-        <div class="card">
-          <div class="card-title">Main Content</div>
-          <div class="form-group">
-            <label>Eyebrow Text</label>
-            <input type="text" value="${data.eyebrow}" onchange="siteData.hero.eyebrow = this.value">
-          </div>
-          <div class="form-group">
-            <label>Main Heading</label>
-            <textarea onchange="siteData.hero.heading = this.value">${data.heading}</textarea>
-          </div>
-          <div class="form-group">
-            <label>Subheading</label>
-            <textarea onchange="siteData.hero.sub = this.value">${data.sub}</textarea>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Background Carousel Slides</div>
-          <div class="items-grid" id="hero-slides-container"></div>
-          <button class="btn btn-outline" style="margin-top: 20px;" onclick="addItem('hero', 'slides')">+ Add New Slide</button>
-        </div>
-      `;
-      container.innerHTML = html;
-      renderSubArray('hero', 'slides', 'hero-slides-container');
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="card-title">Hero Text</div>`;
+      card.appendChild(createField('Eyebrow', data.eyebrowText, v => data.eyebrowText = v));
+      card.appendChild(createField('Heading Line 1', data.headingLine1, v => data.headingLine1 = v));
+      card.appendChild(createField('Heading Line 2 (Italic)', data.headingLine2Em, v => data.headingLine2Em = v));
+      card.appendChild(createField('Subtext', data.subtext, v => data.subtext = v));
+      container.appendChild(card);
+
+      const slidesCard = document.createElement('div');
+      slidesCard.className = 'card';
+      slidesCard.innerHTML = `<div class="card-title">Slides</div><div class="items-grid" id="hero-slides"></div>`;
+      container.appendChild(slidesCard);
+      renderSubArray(data.slides, 'hero-slides', 'hero.slides');
+      
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn btn-outline';
+      addBtn.textContent = '+ Add Slide';
+      addBtn.onclick = () => { data.slides.push({ image: '', alt: '' }); renderActiveTab(); };
+      slidesCard.appendChild(addBtn);
     }
 
-    function renderContact(container, data) {
-       const html = `
-        <div class="card">
-          <div class="card-title">Contact Information</div>
-          <div class="form-group">
-            <label>WhatsApp Number (Digits only)</label>
-            <input type="text" value="${data.whatsapp}" onchange="siteData.contact.whatsapp = this.value">
-          </div>
-          <div class="form-group">
-            <label>Display Phone</label>
-            <input type="text" value="${data.phone}" onchange="siteData.contact.phone = this.value">
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="text" value="${data.email}" onchange="siteData.contact.email = this.value">
-          </div>
-          <div class="form-group">
-            <label>Office Location</label>
-            <input type="text" value="${data.location}" onchange="siteData.contact.location = this.value">
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Social Media Links</div>
-          <div class="form-group">
-            <label>Instagram URL</label>
-            <input type="text" value="${data.social.instagram}" onchange="siteData.contact.social.instagram = this.value">
-          </div>
-          <div class="form-group">
-            <label>Facebook URL</label>
-            <input type="text" value="${data.social.facebook}" onchange="siteData.contact.social.facebook = this.value">
-          </div>
-          <div class="form-group">
-            <label>YouTube URL</label>
-            <input type="text" value="${data.social.youtube}" onchange="siteData.contact.social.youtube = this.value">
-          </div>
-        </div>
-      `;
-      container.innerHTML = html;
+    function renderObjectWithArray(container, data, tabKey, arrayKey) {
+      // Render the top-level fields (like sectionTitle)
+      const headerCard = document.createElement('div');
+      headerCard.className = 'card';
+      headerCard.innerHTML = `<div class="card-title">Section Settings</div>`;
+      for (const key in data) {
+        if (key !== arrayKey) {
+          headerCard.appendChild(createField(key, data[key], v => data[key] = v));
+        }
+      }
+      container.appendChild(headerCard);
+
+      // Render the array items
+      const itemsContainer = document.createElement('div');
+      container.appendChild(itemsContainer);
+      renderArrayList(itemsContainer, data[arrayKey], `${tabKey}.${arrayKey}`);
     }
 
-    function renderArrayList(container, data, tabKey) {
+    function renderArrayList(container, data, path) {
       const grid = document.createElement('div');
       grid.className = 'items-grid';
       
@@ -419,34 +503,37 @@
         let fieldsHtml = '';
         for (const key in item) {
           if (key === 'id') continue;
-          
-          const isImg = key.toLowerCase().includes('image') || key.toLowerCase().includes('url') || key.toLowerCase().includes('avatar');
+          const isImg = key.toLowerCase().includes('image') || key.toLowerCase().includes('url') || key.toLowerCase().includes('avatar') || key === 'cover';
           
           if (isImg) {
             fieldsHtml += `
               <div class="form-group">
                 <label>${key}</label>
                 <div class="upload-container">
-                  <img src="${item[key]}" class="img-preview" id="prev-${tabKey}-${index}-${key}">
+                  <img src="${item[key]}" class="img-preview" id="prev-${path}-${index}-${key}">
                   <div class="upload-controls">
-                    <input type="text" value="${item[key]}" onchange="siteData.${tabKey}[${index}].${key} = this.value" id="input-${tabKey}-${index}-${key}">
-                    <input type="file" class="hidden" id="file-${tabKey}-${index}-${key}" onchange="handleUpload(this, '${tabKey}', ${index}, '${key}')">
-                    <button class="btn btn-outline" style="margin-top: 10px; width: 100%;" onclick="document.getElementById('file-${tabKey}-${index}-${key}').click()">Upload New Image</button>
+                    <input type="text" value="${item[key]}" onchange="updateDeepValue('${path}[${index}].${key}', this.value)" id="input-${path}-${index}-${key}">
+                    <input type="file" class="hidden" id="file-${path}-${index}-${key}" onchange="handleUpload(this, '${path}', ${index}, '${key}')">
+                    <button class="btn btn-outline" style="margin-top: 10px; width: 100%;" onclick="document.getElementById('file-${path}-${index}-${key}').click()">Upload</button>
                   </div>
                 </div>
               </div>
             `;
           } else if (key === 'features' && Array.isArray(item[key])) {
-             fieldsHtml += `<div class="form-group"><label>Features (One per line)</label><textarea onchange="siteData.${tabKey}[${index}].${key} = this.value.split('\\n')">${item[key].join('\n')}</textarea></div>`;
+             // Handle pricing features
+             fieldsHtml += `<div class="form-group"><label>Features (JSON format)</label><textarea onchange="updateDeepValue('${path}[${index}].${key}', JSON.parse(this.value))">${JSON.stringify(item[key], null, 2)}</textarea></div>`;
+          } else if (Array.isArray(item[key])) {
+             fieldsHtml += `<div class="form-group"><label>${key} (Nested Array)</label><p style="font-size:10px; color:var(--text-muted)">Edit this in its own tab if available</p></div>`;
           } else {
-             fieldsHtml += `<div class="form-group"><label>${key}</label><textarea onchange="siteData.${tabKey}[${index}].${key} = this.value">${item[key]}</textarea></div>`;
+             const isLong = item[key] && item[key].length > 50;
+             fieldsHtml += `<div class="form-group"><label>${key}</label>${isLong ? `<textarea onchange="updateDeepValue('${path}[${index}].${key}', this.value)">${item[key]}</textarea>` : `<input type="text" value="${item[key]}" onchange="updateDeepValue('${path}[${index}].${key}', this.value)">`}</div>`;
           }
         }
 
         card.innerHTML = `
           <div class="card-title">
-            ${item.title || item.name || item.label || 'Item ' + (index + 1)}
-            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 10px;" onclick="removeItem('${tabKey}', ${index})">Remove</button>
+            ${item.title || item.name || 'Item ' + (index + 1)}
+            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 10px;" onclick="removeDeepItem('${path}', ${index})">Remove</button>
           </div>
           ${fieldsHtml}
         `;
@@ -458,27 +545,26 @@
       const addBtn = document.createElement('button');
       addBtn.className = 'btn btn-outline';
       addBtn.style.marginTop = '20px';
-      addBtn.textContent = '+ Add New Item to ' + tabKey;
-      addBtn.onclick = () => addItem(tabKey);
+      addBtn.textContent = '+ Add New Item';
+      addBtn.onclick = () => addDeepItem(path);
       container.appendChild(addBtn);
     }
 
-    function renderSubArray(parentKey, subKey, containerId) {
+    function renderSubArray(data, containerId, path) {
       const container = document.getElementById(containerId);
-      const data = siteData[parentKey][subKey];
       container.innerHTML = '';
-      
       data.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'card';
+        const imgKey = item.image ? 'image' : 'url';
         card.innerHTML = `
-          <div class="card-title">Slide ${index + 1} <button class="btn btn-danger" style="padding: 5px 10px;" onclick="removeItem('${parentKey}', ${index}, '${subKey}')">✕</button></div>
+          <div class="card-title">Slide ${index + 1} <button class="btn btn-danger" style="padding: 5px 10px;" onclick="removeDeepItem('${path}', ${index})">✕</button></div>
           <div class="upload-container">
-            <img src="${item.url}" class="img-preview" id="prev-${parentKey}-${subKey}-${index}">
+            <img src="${item[imgKey]}" class="img-preview">
             <div class="upload-controls">
-              <input type="text" value="${item.url}" onchange="siteData.${parentKey}.${subKey}[${index}].url = this.value" id="input-${parentKey}-${subKey}-${index}">
-              <input type="file" class="hidden" id="file-${parentKey}-${subKey}-${index}" onchange="handleUpload(this, '${parentKey}', ${index}, 'url', '${subKey}')">
-              <button class="btn btn-outline" style="margin-top: 10px; width: 100%;" onclick="document.getElementById('file-${parentKey}-${subKey}-${index}').click()">Change Slide Image</button>
+              <input type="text" value="${item[imgKey]}" onchange="updateDeepValue('${path}[${index}].${imgKey}', this.value)">
+              <input type="file" class="hidden" id="file-${path}-${index}" onchange="handleUpload(this, '${path}', ${index}, '${imgKey}')">
+              <button class="btn btn-outline" style="margin-top: 10px; width: 100%;" onclick="document.getElementById('file-${path}-${index}').click()">Change Image</button>
             </div>
           </div>
         `;
@@ -486,31 +572,41 @@
       });
     }
 
-    // ═══════════════════════════════════════════════════════ LOGIC
-    function addItem(tabKey, subKey = null) {
-      const target = subKey ? siteData[tabKey][subKey] : siteData[tabKey];
-      const template = JSON.parse(JSON.stringify(target[0]));
-      // Clear values in template
+    // ═══════════════════════════════════════════════════════ DEEP ACCESS HELPERS
+    function updateDeepValue(path, val) {
+      const parts = path.split(/[.\[\]]/).filter(p => p !== "");
+      let current = siteData;
+      for (let i = 0; i < parts.length - 1; i++) {
+        current = current[parts[i]];
+      }
+      current[parts[parts.length - 1]] = val;
+    }
+
+    function addDeepItem(path) {
+      const parts = path.split(/[.\[\]]/).filter(p => p !== "");
+      let current = siteData;
+      parts.forEach(p => current = current[p]);
+      const template = current.length > 0 ? JSON.parse(JSON.stringify(current[0])) : {};
       for(let k in template) if(typeof template[k] === 'string') template[k] = '';
-      target.push(template);
+      current.push(template);
       renderActiveTab();
     }
 
-    function removeItem(tabKey, index, subKey = null) {
+    function removeDeepItem(path, index) {
       if(!confirm('Are you sure?')) return;
-      if(subKey) siteData[tabKey][subKey].splice(index, 1);
-      else siteData[tabKey].splice(index, 1);
+      const parts = path.split(/[.\[\]]/).filter(p => p !== "");
+      let current = siteData;
+      parts.forEach(p => current = current[p]);
+      current.splice(index, 1);
       renderActiveTab();
     }
 
-    async function handleUpload(fileInput, tabKey, index, fieldKey, subKey = null) {
+    async function handleUpload(fileInput, path, index, fieldKey) {
       const file = fileInput.files[0];
       if (!file) return;
-
       const btn = fileInput.nextElementSibling;
       btn.textContent = 'Uploading...';
       btn.disabled = true;
-
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = async () => {
@@ -522,20 +618,12 @@
           });
           const data = await res.json();
           if (data.success) {
-            if(subKey) siteData[tabKey][subKey][index][fieldKey] = data.url;
-            else siteData[tabKey][index][fieldKey] = data.url;
-            
-            showToast("Image uploaded to Cloudinary!");
+            updateDeepValue(`${path}[${index}].${fieldKey}`, data.url);
+            showToast("Uploaded to Cloudinary!");
             renderActiveTab();
-          } else {
-            alert('Upload failed: ' + data.message);
-          }
-        } catch (err) {
-          alert('Upload error');
-        } finally {
-          btn.textContent = 'Upload New Image';
-          btn.disabled = false;
-        }
+          } else { alert('Upload failed: ' + data.message); }
+        } catch (err) { alert('Upload error'); }
+        finally { btn.textContent = 'Upload'; btn.disabled = false; }
       };
     }
 
@@ -543,14 +631,12 @@
     document.getElementById('sidebar-nav').addEventListener('click', (e) => {
       const item = e.target.closest('.nav-item');
       if (!item) return;
-      
       document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
       currentTab = item.dataset.tab;
       renderActiveTab();
     });
 
-    // Check auth on load
     checkAuth();
   </script>
 </body>
