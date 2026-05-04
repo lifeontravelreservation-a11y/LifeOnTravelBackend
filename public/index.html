@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Life In Travel | Command Center</title>
+  <title>Life On Travel | Command Center</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -126,7 +126,7 @@
   <!-- Login Section -->
   <div id="login-overlay">
     <div class="login-card">
-      <div class="logo" style="justify-content: center; margin-bottom: 20px;">✦ Life In Travel</div>
+      <div class="logo" style="justify-content: center; margin-bottom: 20px;">✦ Life On Travel</div>
       <h1>Command Center</h1>
       <div class="form-group">
         <input type="password" id="admin-pass" placeholder="Enter Access Code" autocomplete="current-password">
@@ -139,7 +139,7 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="logo">✦ Life In Travel</div>
+      <div class="logo">✦ Life On Travel</div>
       <p style="font-size: 12px; color: var(--text-muted); margin: 5px 0 0;">Management Suite</p>
     </div>
     <nav id="sidebar-nav">
@@ -229,7 +229,7 @@
       ],
       about: {
         heroTitle: "Born in the Wild, Built for Explorers",
-        heroDesc: "Life In Travel was founded in 2009...",
+        heroDesc: "Life On Travel was founded in 2009...",
         stats: [
           { number: 1200, label: "Safaris Led" },
           { number: 48, label: "Destinations" },
@@ -243,7 +243,7 @@
           { name: "Arjun Rawat", role: "Founder", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80" }
         ],
         timeline: [
-          { year: "2009", text: "Life In Travel launched with a single jeep..." },
+          { year: "2009", text: "Life On Travel launched with a single jeep..." },
           { year: "2016", text: "Launch of the Conservation Partnership Program..." }
         ]
       },
@@ -331,7 +331,7 @@
       testimonials: {
         sectionTitle: "What Travellers Say",
         items: [
-          { text: "Life In Travel redefined what I thought a safari could be.", name: "Priya Malhotra", meta: "Mumbai", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&q=80", stars: 5 }
+          { text: "Life On Travel redefined what I thought a safari could be.", name: "Priya Malhotra", meta: "Mumbai", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&q=80", stars: 5 }
         ]
       },
       blog: {
@@ -653,27 +653,25 @@
              `;
           } else {
              const isLong = item[key] && item[key].length > 50;
-             const isContent = key.toLowerCase() === 'body' || key.toLowerCase() === 'content' || key.toLowerCase() === 'description';
+             const isContent = ['body', 'content', 'description', 'text', 'bio'].includes(key.toLowerCase());
              
              if (isContent) {
                fieldsHtml += `
                  <div class="form-group">
-                   <label>${key} (Rich HTML Content)</label>
+                   <label>${key} (Rich Content Editor)</label>
                    <div style="display:flex;gap:5px;margin-bottom:8px">
                      <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'h2')">H2</button>
-                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'h3')">H3</button>
                      <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'b')">Bold</button>
                      <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'i')">Italic</button>
                      <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'p')">Para</button>
                      <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'ul')">List</button>
-                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'a')">Link</button>
                    </div>
-                   <textarea id="ta-${path}-${index}-${key}" style="height:300px;line-height:1.6;font-family:inherit" 
+                   <textarea id="ta-${path}-${index}-${key}" style="height:${key==='body'? '400px':'150px'};line-height:1.6;font-family:inherit" 
                      oninput="document.getElementById('prev-content-${path}-${index}-${key}').innerHTML = this.value"
                      onchange="updateDeepValue('${path}[${index}].${key}', this.value)">${item[key] || ''}</textarea>
-                   <div style="margin-top:10px;padding:15px;background:#1a1a1a;border:1px solid #333;border-radius:10px;font-size:14px;color:#ccc;max-height:200px;overflow-y:auto" 
+                   <div style="margin-top:10px;padding:15px;background:#1a1a1a;border:1px solid #333;border-radius:10px;font-size:14px;color:#ccc;max-height:150px;overflow-y:auto" 
                      id="prev-content-${path}-${index}-${key}">
-                     ${item[key] || '<p style="color:var(--text-muted)">Preview will appear here...</p>'}
+                     ${item[key] || '<p style="color:var(--text-muted)">Preview...</p>'}
                    </div>
                  </div>
                `;
@@ -822,3 +820,4 @@
   </script>
 </body>
 </html>
+
