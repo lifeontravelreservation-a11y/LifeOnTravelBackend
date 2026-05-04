@@ -653,7 +653,33 @@
              `;
           } else {
              const isLong = item[key] && item[key].length > 50;
-             fieldsHtml += `<div class="form-group"><label>${key}</label>${isLong ? `<textarea onchange="updateDeepValue('${path}[${index}].${key}', this.value)">${item[key]}</textarea>` : `<input type="text" value="${item[key]}" onchange="updateDeepValue('${path}[${index}].${key}', this.value)">`}</div>`;
+             const isContent = key.toLowerCase() === 'body' || key.toLowerCase() === 'content' || key.toLowerCase() === 'description';
+             
+             if (isContent) {
+               fieldsHtml += `
+                 <div class="form-group">
+                   <label>${key} (Rich HTML Content)</label>
+                   <div style="display:flex;gap:5px;margin-bottom:8px">
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'h2')">H2</button>
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'h3')">H3</button>
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'b')">Bold</button>
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'i')">Italic</button>
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'p')">Para</button>
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'ul')">List</button>
+                     <button class="btn btn-outline" style="padding:4px 8px;font-size:10px" onclick="insertTag('ta-${path}-${index}-${key}', 'a')">Link</button>
+                   </div>
+                   <textarea id="ta-${path}-${index}-${key}" style="height:300px;line-height:1.6;font-family:inherit" 
+                     oninput="document.getElementById('prev-content-${path}-${index}-${key}').innerHTML = this.value"
+                     onchange="updateDeepValue('${path}[${index}].${key}', this.value)">${item[key] || ''}</textarea>
+                   <div style="margin-top:10px;padding:15px;background:#1a1a1a;border:1px solid #333;border-radius:10px;font-size:14px;color:#ccc;max-height:200px;overflow-y:auto" 
+                     id="prev-content-${path}-${index}-${key}">
+                     ${item[key] || '<p style="color:var(--text-muted)">Preview will appear here...</p>'}
+                   </div>
+                 </div>
+               `;
+             } else {
+               fieldsHtml += `<div class="form-group"><label>${key}</label>${isLong ? `<textarea onchange="updateDeepValue('${path}[${index}].${key}', this.value)">${item[key]}</textarea>` : `<input type="text" value="${item[key]}" onchange="updateDeepValue('${path}[${index}].${key}', this.value)">`}</div>`;
+             }
           }
         }
 
@@ -772,6 +798,25 @@
       currentTab = item.dataset.tab;
       renderActiveTab();
     });
+
+    function insertTag(id, tag) {
+      const ta = document.getElementById(id);
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const text = ta.value;
+      const selected = text.substring(start, end);
+      
+      let open = `<${tag}>`;
+      let close = `</${tag}>`;
+      if (tag === 'a') open = `<a href="#">`;
+      if (tag === 'ul') { open = `<ul>\n  <li>`; close = `</li>\n</ul>`; }
+      
+      const newText = text.substring(0, start) + open + selected + close + text.substring(end);
+      ta.value = newText;
+      ta.dispatchEvent(new Event('input'));
+      ta.dispatchEvent(new Event('change'));
+      ta.focus();
+    }
 
     checkAuth();
   </script>
