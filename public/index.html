@@ -756,6 +756,11 @@
     }
 
     function getBlogPosts() {
+      // Handle case where blog was saved as a flat array instead of { sectionTitle, posts }
+      if (Array.isArray(siteData.blog)) {
+        const existingPosts = siteData.blog;
+        siteData.blog = { sectionTitle: 'From the Wild', posts: existingPosts };
+      }
       if (!siteData.blog) siteData.blog = { sectionTitle: 'From the Wild', posts: [] };
       if (!siteData.blog.posts) {
         if (siteData.blog.items) { siteData.blog.posts = siteData.blog.items; delete siteData.blog.items; }
