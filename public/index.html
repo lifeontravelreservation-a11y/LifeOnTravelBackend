@@ -486,6 +486,8 @@
 
       if (currentTab === 'hero') {
         renderHero(container, tabData);
+      } else if (currentTab === 'blog') {
+        renderBlogEditor(container, tabData);
       } else if (Array.isArray(tabData)) {
         renderArrayList(container, tabData, currentTab);
       } else {
@@ -513,6 +515,231 @@
           renderArrayList(container, arrayFields[key], `${currentTab}.${key}`);
         }
       }
+    }
+
+    /* ═══════════════════════════════════════════════════════ BLOG EDITOR */
+    let activeBlogIndex = 0;
+
+    function renderBlogEditor(container, blogData) {
+      const posts = blogData.posts || blogData.items || [];
+      const search = document.getElementById('admin-search')?.value.toLowerCase() || '';
+      
+      // Section title field
+      const headerCard = document.createElement('div');
+      headerCard.className = 'card';
+      headerCard.innerHTML = `<div class="card-title">Blog Section Settings</div>`;
+      headerCard.appendChild(createField('Section Title', blogData.sectionTitle || '', v => blogData.sectionTitle = v));
+      container.appendChild(headerCard);
+
+      // Two-panel layout
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:grid;grid-template-columns:280px 1fr;gap:20px;margin-top:20px';
+      
+      // === LEFT PANEL: Post List ===
+      const listPanel = document.createElement('div');
+      listPanel.innerHTML = `
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+          <div style="padding:15px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+            <strong style="font-size:13px;color:var(--text)">All Posts (${posts.length})</strong>
+            <button class="btn btn-primary" style="padding:5px 12px;font-size:11px" onclick="addBlogPost()">+ New Post</button>
+          </div>
+          <div id="blog-post-list" style="max-height:600px;overflow-y:auto">
+            ${posts.map((p, i) => {
+              if (search && !JSON.stringify(p).toLowerCase().includes(search)) return '';
+              return `
+                <div onclick="activeBlogIndex=${i};renderActiveTab()" 
+                  style="padding:12px 15px;border-bottom:1px solid var(--border);cursor:pointer;
+                  ${i === activeBlogIndex ? 'background:rgba(201,168,76,0.1);border-left:3px solid var(--primary)' : 'border-left:3px solid transparent'};
+                  transition:all 0.15s">
+                  <div style="font-size:13px;font-weight:500;color:${i === activeBlogIndex ? 'var(--primary)' : 'var(--text)'};margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title || 'Untitled Post'}</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:10px;color:var(--text-muted);background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:50px">${p.category || 'No Category'}</span>
+                    <span style="font-size:10px;color:var(--text-muted)">${p.date || ''}</span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+      wrapper.appendChild(listPanel);
+
+      // === RIGHT PANEL: Post Editor ===
+      const editorPanel = document.createElement('div');
+      
+      if (posts.length === 0) {
+        editorPanel.innerHTML = `
+          <div class="card" style="text-align:center;padding:60px 30px">
+            <p style="font-size:40px;margin-bottom:15px">✍️</p>
+            <h3 style="color:var(--text);margin-bottom:8px">No Blog Posts Yet</h3>
+            <p style="color:var(--text-muted);margin-bottom:20px">Click "+ New Post" to write your first article.</p>
+            <button class="btn btn-primary" onclick="addBlogPost()">Create Your First Post</button>
+          </div>
+        `;
+      } else {
+        if (activeBlogIndex >= posts.length) activeBlogIndex = 0;
+        const post = posts[activeBlogIndex];
+        const idx = activeBlogIndex;
+        const path = 'blog.posts';
+        
+        editorPanel.innerHTML = `
+          <div class="card">
+            <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+              <span>✏️ Editing: ${post.title || 'Untitled'}</span>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-outline" style="padding:5px 12px;font-size:10px" onclick="duplicateBlogPost(${idx})">Duplicate</button>
+                <button class="btn btn-danger" style="padding:5px 12px;font-size:10px" onclick="deleteBlogPost(${idx})">Delete Post</button>
+              </div>
+            </div>
+            
+            <!-- Row 1: Title -->
+            <div class="form-group">
+              <label>Post Title</label>
+              <input type="text" value="${post.title || ''}" onchange="updateDeepValue('${path}[${idx}].title', this.value); document.querySelector('#blog-post-list').children[${idx}].querySelector('div').textContent = this.value" style="font-size:16px;font-weight:500">
+            </div>
+            
+            <!-- Row 2: Slug + Category -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+              <div class="form-group">
+                <label>URL Slug (auto-generated from title)</label>
+                <input type="text" value="${post.slug || ''}" onchange="updateDeepValue('${path}[${idx}].slug', this.value)" placeholder="my-blog-post">
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <input type="text" value="${post.category || ''}" onchange="updateDeepValue('${path}[${idx}].category', this.value)" placeholder="Field Notes, Ecology, Travel Guide...">
+              </div>
+            </div>
+            
+            <!-- Row 3: Author + Date + Read Time -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px">
+              <div class="form-group">
+                <label>Author</label>
+                <input type="text" value="${post.author || ''}" onchange="updateDeepValue('${path}[${idx}].author', this.value)" placeholder="Your Name">
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="text" value="${post.date || ''}" onchange="updateDeepValue('${path}[${idx}].date', this.value)" placeholder="May 4, 2026">
+              </div>
+              <div class="form-group">
+                <label>Read Time</label>
+                <input type="text" value="${post.readTime || ''}" onchange="updateDeepValue('${path}[${idx}].readTime', this.value)" placeholder="5 min read">
+              </div>
+            </div>
+            
+            <!-- Cover Image -->
+            <div class="form-group">
+              <label>Cover Image</label>
+              <div class="upload-container">
+                <img src="${post.image || ''}" class="img-preview" id="blog-cover-preview" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22%3E%3C/svg%3E'">
+                <div class="upload-controls">
+                  <input type="text" value="${post.image || ''}" onchange="updateDeepValue('${path}[${idx}].image', this.value); document.getElementById('blog-cover-preview').src=this.value" id="blog-cover-input">
+                  <input type="file" class="hidden" id="blog-cover-file" onchange="handleUpload(this, '${path}', ${idx}, 'image')">
+                  <button class="btn btn-outline" style="margin-top:10px;width:100%" onclick="document.getElementById('blog-cover-file').click()">Upload Cover Image</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Excerpt -->
+            <div class="form-group">
+              <label>Excerpt (Short summary shown on blog listing page)</label>
+              <textarea style="height:80px" onchange="updateDeepValue('${path}[${idx}].excerpt', this.value)">${post.excerpt || ''}</textarea>
+            </div>
+            
+            <!-- Tags -->
+            <div class="form-group">
+              <label>Tags</label>
+              <div id="blog-tags-list">
+                ${(post.tags || []).map((tag, ti) => `
+                  <div style="display:inline-flex;align-items:center;gap:5px;margin:3px;padding:4px 10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:50px;font-size:12px">
+                    <input type="text" value="${tag}" style="border:none;background:none;padding:0;width:${Math.max(tag.length * 8, 60)}px;color:var(--primary);font-size:12px" onchange="updateDeepValue('${path}[${idx}].tags[${ti}]', this.value)">
+                    <button style="border:none;background:none;color:var(--danger);cursor:pointer;font-size:14px;padding:0" onclick="removeDeepItem('${path}[${idx}].tags', ${ti}); renderActiveTab()">×</button>
+                  </div>
+                `).join('')}
+              </div>
+              <button class="btn btn-outline" style="font-size:11px;padding:4px 10px;margin-top:5px" onclick="addDeepStringItem('${path}[${idx}].tags'); renderActiveTab()">+ Add Tag</button>
+            </div>
+            
+            <!-- Body / Article Content -->
+            <div class="form-group">
+              <label style="font-size:14px;font-weight:600;color:var(--primary)">📝 Article Body (Write your blog here)</label>
+              <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap">
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'h2')">H2</button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'h3')">H3</button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'p')">Paragraph</button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'b')"><b>Bold</b></button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'i')"><i>Italic</i></button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'blockquote')">Quote</button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'ul')">List</button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertTag('blog-body-editor', 'a')">Link</button>
+                <button class="btn btn-outline" style="padding:5px 10px;font-size:11px" onclick="insertBlogImage()">🖼️ Image</button>
+              </div>
+              <textarea id="blog-body-editor" 
+                style="height:450px;line-height:1.7;font-family:inherit;font-size:14px" 
+                oninput="document.getElementById('blog-body-preview').innerHTML = this.value"
+                onchange="updateDeepValue('${path}[${idx}].body', this.value)">${post.body || ''}</textarea>
+            </div>
+            
+            <!-- Live Preview -->
+            <div class="form-group">
+              <label style="font-size:13px;color:var(--text-muted)">📖 Live Preview</label>
+              <div id="blog-body-preview" style="padding:25px;background:#111;border:1px solid var(--border);border-radius:12px;font-size:14px;color:#ccc;line-height:1.8;max-height:400px;overflow-y:auto">
+                ${post.body || '<p style="color:var(--text-muted);text-align:center;padding:40px">Start writing above to see your article preview here...</p>'}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      wrapper.appendChild(editorPanel);
+      container.appendChild(wrapper);
+    }
+
+    function addBlogPost() {
+      const posts = siteData.blog.posts || siteData.blog.items;
+      posts.push({
+        title: 'New Blog Post',
+        category: '',
+        excerpt: '',
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        image: '',
+        slug: 'new-post-' + Date.now(),
+        author: '',
+        readTime: '5 min read',
+        tags: [],
+        body: ''
+      });
+      activeBlogIndex = posts.length - 1;
+      renderActiveTab();
+    }
+
+    function deleteBlogPost(index) {
+      if (!confirm('Are you sure you want to delete this blog post? This cannot be undone.')) return;
+      const posts = siteData.blog.posts || siteData.blog.items;
+      posts.splice(index, 1);
+      activeBlogIndex = Math.max(0, index - 1);
+      renderActiveTab();
+    }
+
+    function duplicateBlogPost(index) {
+      const posts = siteData.blog.posts || siteData.blog.items;
+      const copy = JSON.parse(JSON.stringify(posts[index]));
+      copy.title = copy.title + ' (Copy)';
+      copy.slug = copy.slug + '-copy-' + Date.now();
+      posts.push(copy);
+      activeBlogIndex = posts.length - 1;
+      renderActiveTab();
+    }
+
+    function insertBlogImage() {
+      const url = prompt('Enter the image URL:');
+      if (!url) return;
+      const alt = prompt('Enter image description (alt text):', '') || '';
+      const ta = document.getElementById('blog-body-editor');
+      const start = ta.selectionStart;
+      const imgTag = `<img src="${url}" alt="${alt}" />`;
+      ta.value = ta.value.substring(0, start) + imgTag + ta.value.substring(start);
+      ta.dispatchEvent(new Event('input'));
+      ta.dispatchEvent(new Event('change'));
     }
 
     function renderGenericFields(container, data, path, onUpdate) {
