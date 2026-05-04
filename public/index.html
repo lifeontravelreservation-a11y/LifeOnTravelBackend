@@ -154,7 +154,8 @@
       <div class="nav-item" data-tab="gallery"><span>📷</span> Gallery</div>
       <div class="nav-item" data-tab="stories"><span>📱</span> Web Stories</div>
       <div class="nav-item" data-tab="testimonials"><span>💬</span> Testimonials</div>
-      <div class="nav-item" data-tab="blog"><span>✍️</span> Blog</div>
+      <div class="nav-item" data-tab="blog"><span>📰</span> Blog Section</div>
+      <div class="nav-item" data-tab="blogposts"><span>✍️</span> Blog Posts</div>
       <div class="nav-item" data-tab="cta"><span>📞</span> CTA Section</div>
       <div class="nav-item" data-tab="footer"><span>👣</span> Footer</div>
     </nav>
@@ -486,13 +487,15 @@
       const navItem = document.querySelector(`[data-tab="${currentTab}"]`);
       titleEl.textContent = navItem ? navItem.textContent.split(' ').slice(1).join(' ') : currentTab;
 
-      const tabData = siteData[currentTab];
+      const tabData = currentTab === 'blogposts' ? siteData.blog : siteData[currentTab];
       if (!tabData) return;
 
       if (currentTab === 'hero') {
         renderHero(container, tabData);
-      } else if (currentTab === 'blog') {
+      } else if (currentTab === 'blogposts') {
         renderBlogEditor(container, tabData);
+      } else if (currentTab === 'blog') {
+        renderBlogSection(container, tabData);
       } else if (Array.isArray(tabData)) {
         renderArrayList(container, tabData, currentTab);
       } else {
@@ -522,7 +525,61 @@
       }
     }
 
-    /* ═══════════════════════════════════════════════════════ BLOG EDITOR */
+    /* ═══════════════════════════════════════════════════════ BLOG SECTION (Main Site) */
+    function renderBlogSection(container, blogData) {
+      const posts = blogData.posts || blogData.items || [];
+      
+      // Section settings
+      const headerCard = document.createElement('div');
+      headerCard.className = 'card';
+      headerCard.innerHTML = `<div class="card-title">📰 Blog Section — Main Site Settings</div>
+        <p style="color:var(--text-muted);font-size:12px;margin-bottom:15px">Control how the blog section appears on your homepage. To write or edit blog articles, go to <strong style="color:var(--primary);cursor:pointer" onclick="document.querySelector('[data-tab=blogposts]').click()">Blog Posts →</strong></p>`;
+      headerCard.appendChild(createField('Section Title (displayed on homepage)', blogData.sectionTitle || '', v => blogData.sectionTitle = v));
+      container.appendChild(headerCard);
+
+      // Post cards with cover images
+      const gridTitle = document.createElement('h3');
+      gridTitle.style.cssText = 'margin:30px 0 15px;color:var(--primary);font-size:14px';
+      gridTitle.textContent = `FEATURED POSTS (${posts.length} total)`;
+      container.appendChild(gridTitle);
+
+      const grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px';
+      
+      posts.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform 0.2s';
+        card.onmouseover = () => card.style.transform = 'translateY(-2px)';
+        card.onmouseout = () => card.style.transform = '';
+        card.innerHTML = `
+          <div style="position:relative;height:160px;overflow:hidden;background:#111">
+            <img src="${p.image || ''}" style="width:100%;height:100%;object-fit:cover;opacity:${p.image ? '1' : '0.3'}" onerror="this.style.opacity='0.1'">
+            <span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:var(--primary);font-size:10px;padding:3px 10px;border-radius:50px;letter-spacing:0.05em">${p.category || 'No Category'}</span>
+          </div>
+          <div style="padding:15px">
+            <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title || 'Untitled'}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">${p.date || ''} · ${p.readTime || ''}</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline" style="padding:4px 10px;font-size:10px;flex:1" onclick="activeBlogIndex=${i};document.querySelector('[data-tab=blogposts]').click()">✏️ Edit Post</button>
+              <button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="if(confirm('Delete this post?')){(siteData.blog.posts||siteData.blog.items).splice(${i},1);renderActiveTab()}">🗑️</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      
+      container.appendChild(grid);
+
+      // Add new post button
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn btn-primary';
+      addBtn.style.marginTop = '20px';
+      addBtn.textContent = '+ Create New Blog Post';
+      addBtn.onclick = () => { addBlogPost(); document.querySelector('[data-tab="blogposts"]').click(); };
+      container.appendChild(addBtn);
+    }
+
+    /* ═══════════════════════════════════════════════════════ BLOG POST EDITOR */
     let activeBlogIndex = 0;
 
     function renderBlogEditor(container, blogData) {
