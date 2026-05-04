@@ -147,13 +147,14 @@
       <div class="nav-item" data-tab="navbar"><span>⚓</span> Navigation</div>
       <div class="nav-item active" data-tab="hero"><span>⌂</span> Home / Hero</div>
       <div class="nav-item" data-tab="stats"><span>📊</span> Vital Stats</div>
+      <div class="nav-item" data-tab="about"><span>📖</span> About Page</div>
       <div class="nav-item" data-tab="destinations"><span>🗺️</span> Destinations</div>
       <div class="nav-item" data-tab="packages"><span>🏷️</span> Packages</div>
       <div class="nav-item" data-tab="pricing"><span>💎</span> Pricing</div>
       <div class="nav-item" data-tab="gallery"><span>📷</span> Gallery</div>
       <div class="nav-item" data-tab="stories"><span>📱</span> Web Stories</div>
       <div class="nav-item" data-tab="testimonials"><span>💬</span> Testimonials</div>
-      <div class="nav-item" data-tab="blog"><span>✍️</span> Field Journal</div>
+      <div class="nav-item" data-tab="blog"><span>✍️</span> Blog</div>
       <div class="nav-item" data-tab="cta"><span>📞</span> CTA Section</div>
       <div class="nav-item" data-tab="footer"><span>👣</span> Footer</div>
     </nav>
@@ -165,7 +166,10 @@
   <!-- Main Content Area -->
   <main class="main-content">
     <div class="section-header">
-      <h2 class="section-title" id="active-tab-title">Hero Section</h2>
+      <div style="display:flex;align-items:center;gap:20px">
+        <h2 class="section-title" id="active-tab-title">Hero Section</h2>
+        <input type="text" id="admin-search" placeholder="Filter items..." style="width:250px;margin-bottom:0" oninput="renderActiveTab()">
+      </div>
       <button class="btn btn-primary" id="master-save-btn" onclick="saveEverything()">Save All Changes</button>
     </div>
 
@@ -223,19 +227,80 @@
         { number: 15, suffix: " yrs", label: "Expert Experience" },
         { number: 98, suffix: "%", label: "Guest Satisfaction" }
       ],
+      about: {
+        heroTitle: "Born in the Wild, Built for Explorers",
+        heroDesc: "Life In Travel was founded in 2009...",
+        stats: [
+          { number: 1200, label: "Safaris Led" },
+          { number: 48, label: "Destinations" },
+          { number: 15, label: "Experience" }
+        ],
+        values: [
+          { icon: "🌿", title: "Conservation First", text: "A portion of every booking goes directly to habitat restoration..." },
+          { icon: "🔭", title: "Expert-Led Immersion", text: "Every guide holds a degree in ecology or zoology..." }
+        ],
+        team: [
+          { name: "Arjun Rawat", role: "Founder", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80" }
+        ],
+        timeline: [
+          { year: "2009", text: "Life In Travel launched with a single jeep..." },
+          { year: "2016", text: "Launch of the Conservation Partnership Program..." }
+        ]
+      },
       destinations: {
         sectionEyebrow: "Explore the Wild",
         sectionTitle: "Our Destinations",
         sectionDesc: "Hand-picked wilderness corridors across the globe.",
         items: [
-          { title: "Jim Corbett", region: "Uttarakhand, India", type: "Tiger Reserve", duration: "3–5 Days", image: "https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=600&q=80", slug: "jim-corbett" }
+          { 
+            title: "Jim Corbett", 
+            region: "Uttarakhand, India", 
+            type: "Tiger Reserve", 
+            duration: "3–5 Days", 
+            image: "https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=600&q=80", 
+            slug: "jim-corbett",
+            price: "From ₹28,000",
+            bestTime: "October to June (peak: March–May)",
+            description: "Jim Corbett National Park is India's oldest and most celebrated tiger reserve...",
+            highlights: [
+              { icon: "🐅", label: "Flagship Wildlife", val: "Bengal Tiger" },
+              { icon: "🐘", label: "Also Present", val: "Asian Elephant" }
+            ],
+            gallery: [
+              "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=600&q=80",
+              "https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=600&q=80"
+            ],
+            wildlife: ["Bengal Tiger", "Leopard", "Asian Elephant"],
+            facts: [
+              { label: "Established", val: "1936" },
+              { label: "Zones", val: "Bijrani, Jhirna, Dhikala" }
+            ]
+          }
         ]
       },
       packages: {
         sectionEyebrow: "Tailored for You",
         sectionTitle: "Safari Packages",
         items: [
-          { title: "The Corbett Immersion", type: "Tiger Safari", description: "A six-day deep dive...", duration: "6 Days / 5 Nights", groupSize: "Up to 8", difficulty: "Easy", price: "₹42,000", priceNote: "/person", image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=800&q=80", slug: "corbett-immersion" }
+          { 
+            title: "The Corbett Immersion", 
+            type: "Tiger Safari", 
+            description: "A six-day deep dive into the heart of Jim Corbett National Park...", 
+            duration: "6 Days / 5 Nights", 
+            groupSize: "Up to 8", 
+            difficulty: "Easy", 
+            price: "₹42,000", 
+            priceNote: "/person", 
+            image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=800&q=80", 
+            slug: "corbett-immersion",
+            accommodation: "Luxury Eco-Lodge with private decks",
+            itinerary: [
+              { day: 1, title: "Arrival & Orientation", desc: "Arrive at Ramnagar. Transfer to the lodge..." },
+              { day: 2, title: "Dhikala Zone Safari", desc: "Full day exploration of the Dhikala zone..." }
+            ],
+            inclusions: ["5 nights luxury accommodation", "All meals & refreshments", "Expert naturalist guides"],
+            exclusions: ["Flight/Train tickets", "Personal expenses", "Tips for guides & drivers"]
+          }
         ]
       },
       pricing: {
@@ -253,7 +318,14 @@
       stories: {
         sectionTitle: "Web Stories",
         items: [
-          { title: "Dawn of the Tiger", label: "Jim Corbett", coverImage: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=400&q=80", slides: [{ image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=900&q=80", title: "Dawn", text: "..." }] }
+          { 
+            title: "Dawn of the Tiger", 
+            label: "Jim Corbett", 
+            coverImage: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=400&q=80", 
+            slides: [
+              { image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=900&q=80", title: "Dawn", text: "The forest holds its breath..." }
+            ] 
+          }
         ]
       },
       testimonials: {
@@ -265,7 +337,18 @@
       blog: {
         sectionTitle: "From the Wild",
         posts: [
-          { title: "The Art of Reading Tiger Pug Marks", category: "Field Notes", excerpt: "...", date: "March 15, 2025", image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=800&q=80", slug: "tiger-pug-marks" }
+          { 
+            title: "The Art of Reading Tiger Pug Marks", 
+            category: "Field Notes", 
+            excerpt: "Before you see the tiger, the forest tells you where it has been...", 
+            date: "March 15, 2025", 
+            image: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=800&q=80", 
+            slug: "tiger-pug-marks",
+            author: "Arjun Rawat",
+            readTime: "6 min read",
+            tags: ["Tigers", "Field Notes", "Tracking"],
+            body: "<h2>Before You See the Tiger</h2><p>Every naturalist knows the truth...</p>"
+          }
         ]
       },
       cta: {
@@ -401,26 +484,44 @@
       const tabData = siteData[currentTab];
       if (!tabData) return;
 
-      if (currentTab === 'hero') renderHero(container, tabData);
-      else if (Array.isArray(tabData)) renderArrayList(container, tabData, currentTab);
-      else if (typeof tabData === 'object') {
-          // Check for common array keys
-          const arrayKey = ['items', 'posts', 'plans', 'links', 'cta', 'slides', 'buttons', 'exploreLinks', 'companyLinks', 'legalLinks', 'socialLinks'].find(k => Array.isArray(tabData[k]));
-          if (arrayKey) {
-              renderObjectWithArray(container, tabData, currentTab, arrayKey);
-          } else {
-              renderGenericFields(container, tabData, currentTab);
-          }
+      if (currentTab === 'hero') {
+        renderHero(container, tabData);
+      } else if (Array.isArray(tabData)) {
+        renderArrayList(container, tabData, currentTab);
+      } else {
+        // Render top-level generic fields first
+        const scalarFields = {};
+        const arrayFields = {};
+        for (const key in tabData) {
+          if (Array.isArray(tabData[key])) arrayFields[key] = tabData[key];
+          else scalarFields[key] = tabData[key];
+        }
+
+        if (Object.keys(scalarFields).length > 0) {
+          renderGenericFields(container, scalarFields, currentTab, (key, val) => {
+            tabData[key] = val;
+          });
+        }
+
+        // Then render each array
+        for (const key in arrayFields) {
+          const sectionTitle = document.createElement('h3');
+          sectionTitle.style.margin = '40px 0 20px';
+          sectionTitle.style.color = 'var(--primary)';
+          sectionTitle.textContent = key.toUpperCase();
+          container.appendChild(sectionTitle);
+          renderArrayList(container, arrayFields[key], `${currentTab}.${key}`);
+        }
       }
     }
 
-    function renderGenericFields(container, data, path) {
+    function renderGenericFields(container, data, path, onUpdate) {
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<div class="card-title">${path.toUpperCase()} Configuration</div>`;
+      card.innerHTML = `<div class="card-title">${path.split('.').pop().toUpperCase()} Settings</div>`;
       
       for (const key in data) {
-        if (typeof data[key] === 'object' && !Array.isArray(data[key])) {
+        if (typeof data[key] === 'object' && data[key] !== null && !Array.isArray(data[key])) {
           // Nested object (like social)
           for (const subKey in data[key]) {
              card.appendChild(createField(key + '.' + subKey, data[key][subKey], (val) => {
@@ -429,10 +530,10 @@
           }
           continue;
         }
-        if (Array.isArray(data[key])) continue; // Handle arrays separately
         
         card.appendChild(createField(key, data[key], (val) => {
-          data[key] = val;
+          if (onUpdate) onUpdate(key, val);
+          else data[key] = val;
         }));
       }
       container.appendChild(card);
@@ -493,10 +594,17 @@
     }
 
     function renderArrayList(container, data, path) {
+      const search = document.getElementById('admin-search')?.value.toLowerCase() || '';
       const grid = document.createElement('div');
       grid.className = 'items-grid';
       
       data.forEach((item, index) => {
+        // Search check
+        if (search) {
+          const itemText = JSON.stringify(item).toLowerCase();
+          if (!itemText.includes(search)) return;
+        }
+
         const card = document.createElement('div');
         card.className = 'card';
         
@@ -519,11 +627,30 @@
                 </div>
               </div>
             `;
-          } else if (key === 'features' && Array.isArray(item[key])) {
-             // Handle pricing features
-             fieldsHtml += `<div class="form-group"><label>Features (JSON format)</label><textarea onchange="updateDeepValue('${path}[${index}].${key}', JSON.parse(this.value))">${JSON.stringify(item[key], null, 2)}</textarea></div>`;
-          } else if (Array.isArray(item[key])) {
-             fieldsHtml += `<div class="form-group"><label>${key} (Nested Array)</label><p style="font-size:10px; color:var(--text-muted)">Edit this in its own tab if available</p></div>`;
+          } else if (Array.isArray(item[key]) && (item[key].length === 0 || typeof item[key][0] === 'string')) {
+             // Handle simple string arrays (wildlife, inclusions, etc)
+             fieldsHtml += `
+               <div class="form-group">
+                 <label>${key} (List)</label>
+                 <div id="list-${path}-${index}-${key}">
+                   ${item[key].map((str, si) => `
+                     <div style="display:flex;gap:5px;margin-bottom:5px">
+                       <input type="text" value="${str}" onchange="updateDeepValue('${path}[${index}].${key}[${si}]', this.value)">
+                       <button class="btn btn-danger" style="padding:5px 10px" onclick="removeDeepItem('${path}[${index}].${key}', ${si})">✕</button>
+                     </div>
+                   `).join('')}
+                 </div>
+                 <button class="btn btn-outline" style="font-size:11px;padding:5px 10px" onclick="addDeepStringItem('${path}[${index}].${key}')">+ Add to ${key}</button>
+               </div>
+             `;
+          } else if (typeof item[key] === 'object' && item[key] !== null) {
+             // Handle complex nested objects or arrays as JSON
+             fieldsHtml += `
+               <div class="form-group">
+                 <label>${key} (JSON)</label>
+                 <textarea style="height:120px;font-family:monospace;font-size:11px;background:#050505" onchange="try{updateDeepValue('${path}[${index}].${key}', JSON.parse(this.value)); this.style.borderColor=''}catch(e){this.style.borderColor='var(--danger)'}">${JSON.stringify(item[key], null, 2)}</textarea>
+               </div>
+             `;
           } else {
              const isLong = item[key] && item[key].length > 50;
              fieldsHtml += `<div class="form-group"><label>${key}</label>${isLong ? `<textarea onchange="updateDeepValue('${path}[${index}].${key}', this.value)">${item[key]}</textarea>` : `<input type="text" value="${item[key]}" onchange="updateDeepValue('${path}[${index}].${key}', this.value)">`}</div>`;
@@ -592,6 +719,14 @@
       renderActiveTab();
     }
 
+    function addDeepStringItem(path) {
+      const parts = path.split(/[.\[\]]/).filter(p => p !== "");
+      let current = siteData;
+      parts.forEach(p => current = current[p]);
+      current.push("");
+      renderActiveTab();
+    }
+
     function removeDeepItem(path, index) {
       if(!confirm('Are you sure?')) return;
       const parts = path.split(/[.\[\]]/).filter(p => p !== "");
@@ -631,6 +766,7 @@
     document.getElementById('sidebar-nav').addEventListener('click', (e) => {
       const item = e.target.closest('.nav-item');
       if (!item) return;
+      document.getElementById('admin-search').value = '';
       document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
       currentTab = item.dataset.tab;
