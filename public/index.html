@@ -527,7 +527,7 @@
 
     /* ═══════════════════════════════════════════════════════ BLOG SECTION (Main Site) */
     function renderBlogSection(container, blogData) {
-      const posts = blogData.posts || blogData.items || [];
+      const posts = getBlogPosts();
       
       // Section settings
       const headerCard = document.createElement('div');
@@ -561,7 +561,7 @@
             <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">${p.date || ''} · ${p.readTime || ''}</div>
             <div style="display:flex;gap:6px">
               <button class="btn btn-outline" style="padding:4px 10px;font-size:10px;flex:1" onclick="activeBlogIndex=${i};document.querySelector('[data-tab=blogposts]').click()">✏️ Edit Post</button>
-              <button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="if(confirm('Delete this post?')){(siteData.blog.posts||siteData.blog.items).splice(${i},1);renderActiveTab()}">🗑️</button>
+              <button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="if(confirm('Delete this post?')){getBlogPosts().splice(${i},1);renderActiveTab()}">🗑️</button>
             </div>
           </div>
         `;
@@ -583,15 +583,14 @@
     let activeBlogIndex = 0;
 
     function renderBlogEditor(container, blogData) {
-      const posts = blogData.posts || blogData.items || [];
+      const posts = getBlogPosts();
       const search = document.getElementById('admin-search')?.value.toLowerCase() || '';
       
-      // Section title field
+      // Header
       const headerCard = document.createElement('div');
       headerCard.className = 'card';
-      headerCard.innerHTML = `<div class="card-title">Blog Section Settings</div>`;
-      headerCard.appendChild(createField('Section Title', blogData.sectionTitle || '', v => blogData.sectionTitle = v));
-      container.appendChild(headerCard);
+      headerCard.innerHTML = `<div class="card-title">✍️ Blog Post Editor</div>
+        <p style="color:var(--text-muted);font-size:12px">Write, edit, and manage your blog articles here. All changes save to the database when you click "Save All Changes".</p>`;
 
       // Two-panel layout
       const wrapper = document.createElement('div');
@@ -756,8 +755,17 @@
       container.appendChild(wrapper);
     }
 
+    function getBlogPosts() {
+      if (!siteData.blog) siteData.blog = { sectionTitle: 'From the Wild', posts: [] };
+      if (!siteData.blog.posts) {
+        if (siteData.blog.items) { siteData.blog.posts = siteData.blog.items; delete siteData.blog.items; }
+        else siteData.blog.posts = [];
+      }
+      return siteData.blog.posts;
+    }
+
     function addBlogPost() {
-      const posts = siteData.blog.posts || siteData.blog.items;
+      const posts = getBlogPosts();
       posts.push({
         title: 'New Blog Post',
         category: '',
@@ -765,7 +773,7 @@
         date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
         image: '',
         slug: 'new-post-' + Date.now(),
-        author: '',
+        author: 'Life On Travel Team',
         readTime: '5 min read',
         tags: [],
         body: ''
@@ -776,14 +784,14 @@
 
     function deleteBlogPost(index) {
       if (!confirm('Are you sure you want to delete this blog post? This cannot be undone.')) return;
-      const posts = siteData.blog.posts || siteData.blog.items;
+      const posts = getBlogPosts();
       posts.splice(index, 1);
       activeBlogIndex = Math.max(0, index - 1);
       renderActiveTab();
     }
 
     function duplicateBlogPost(index) {
-      const posts = siteData.blog.posts || siteData.blog.items;
+      const posts = getBlogPosts();
       const copy = JSON.parse(JSON.stringify(posts[index]));
       copy.title = copy.title + ' (Copy)';
       copy.slug = copy.slug + '-copy-' + Date.now();
