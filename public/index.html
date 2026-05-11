@@ -163,21 +163,13 @@
       <p style="font-size: 12px; color: var(--text-muted); margin: 5px 0 0;">Management Suite</p>
     </div>
     <nav id="sidebar-nav">
-      <div class="nav-item" data-tab="site"><span>⚙️</span> Brand & Settings</div>
-      <div class="nav-item" data-tab="navbar"><span>⚓</span> Navigation</div>
-      <div class="nav-item active" data-tab="hero"><span>⌂</span> Home / Hero</div>
-      <div class="nav-item" data-tab="stats"><span>📊</span> Vital Stats</div>
-      <div class="nav-item" data-tab="about"><span>📖</span> About Page</div>
+      <div class="nav-item active" data-tab="hero"><span>🏠</span> Hero Section</div>
       <div class="nav-item" data-tab="destinations"><span>🗺️</span> Destinations</div>
-      <div class="nav-item" data-tab="packages"><span>🏷️</span> Packages</div>
-      <div class="nav-item" data-tab="pricing"><span>💎</span> Pricing</div>
+      <div class="nav-item" data-tab="packages"><span>📦</span> Packages</div>
       <div class="nav-item" data-tab="gallery"><span>📷</span> Gallery</div>
+      <div class="nav-item" data-tab="pricing"><span>💎</span> Pricing</div>
       <div class="nav-item" data-tab="stories"><span>📱</span> Web Stories</div>
-      <div class="nav-item" data-tab="testimonials"><span>💬</span> Testimonials</div>
-      <div class="nav-item" data-tab="blog"><span>📰</span> Blog Section</div>
       <div class="nav-item" data-tab="blogposts"><span>✍️</span> Blog Posts</div>
-      <div class="nav-item" data-tab="cta"><span>📞</span> CTA Section</div>
-      <div class="nav-item" data-tab="footer"><span>👣</span> Footer</div>
     </nav>
     <div style="margin-top: auto; padding: 20px 25px;">
        <button class="btn btn-outline" style="width: 100%;" onclick="logout()">Logout</button>
@@ -187,11 +179,8 @@
   <!-- Main Content Area -->
   <main class="main-content">
     <div class="section-header">
-      <div style="display:flex;align-items:center;gap:20px">
-        <h2 class="section-title" id="active-tab-title">Hero Section</h2>
-        <input type="text" id="admin-search" placeholder="Filter items..." style="width:250px;margin-bottom:0" oninput="renderActiveTab()">
-      </div>
-      <button class="btn btn-primary" id="master-save-btn" onclick="saveEverything()">Save All Changes</button>
+      <h2 class="section-title" id="active-tab-title">Hero Section</h2>
+      <button class="btn btn-primary" id="master-save-btn" onclick="saveEverything()">💾 Save All</button>
     </div>
 
     <div id="editor-container"></div>
@@ -286,19 +275,15 @@
       titleEl.textContent = navItem ? navItem.textContent.split(' ').slice(1).join(' ') : currentTab;
 
       const dispatch = {
-        blogposts:    () => renderBlogEditor(container),
-        blog:         () => renderBlogSection(container),
-        gallery:      () => renderGalleryEditor(container),
-        testimonials: () => renderTestimonialsEditor(container),
-        stats:        () => renderStatsEditor(container),
         hero:         () => renderHeroEditor(container),
+        destinations: () => renderDestEditor(container),
+        packages:     () => renderPkgEditor(container),
+        gallery:      () => renderGalleryEditor(container),
+        pricing:      () => renderPricingEditor(container),
+        stories:      () => renderStoriesEditor(container),
+        blogposts:    () => renderBlogEditor(container),
       };
-
-      if (dispatch[currentTab]) {
-        dispatch[currentTab]();
-      } else {
-        renderGenericTab(container, siteData[currentTab] || {}, currentTab);
-      }
+      if (dispatch[currentTab]) dispatch[currentTab]();
     }
 
     // ── Simple text field builder ─────────────────────────────────────────
@@ -409,215 +394,103 @@
       container.appendChild(grid);
     }
 
-    // ══════════════════════════════════════════════════════════════════════
-    //  TESTIMONIALS EDITOR  — siteData.testimonials.items[{text,name,meta,stars,avatar}]
-    // ══════════════════════════════════════════════════════════════════════
-    function renderTestimonialsEditor(container) {
-      if (!siteData.testimonials) siteData.testimonials = { sectionTitle: 'Testimonials', items: [] };
-      if (Array.isArray(siteData.testimonials)) siteData.testimonials = { sectionTitle: 'Testimonials', items: siteData.testimonials };
-      if (!siteData.testimonials.items) siteData.testimonials.items = [];
-      const items = siteData.testimonials.items;
-
-      const hCard = document.createElement('div'); hCard.className = 'card';
-      hCard.innerHTML = '<div class="card-title">Testimonials Settings</div>';
-      hCard.appendChild(createField('Section Title', siteData.testimonials.sectionTitle||'', v => siteData.testimonials.sectionTitle = v));
-      hCard.appendChild(createField('Section Eyebrow', siteData.testimonials.sectionEyebrow||'', v => siteData.testimonials.sectionEyebrow = v));
-      container.appendChild(hCard);
-
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:24px';
-
-      items.forEach((item, i) => {
-        const c = document.createElement('div'); c.className = 'card';
-        const stars = item.stars || 5;
-        c.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <strong style="color:var(--primary)">Review #${i+1}</strong>
-            <button class="btn btn-danger" style="padding:4px 10px;font-size:11px"
-              onclick="removeDeepItem('testimonials.items',${i})">Delete</button>
-          </div>
-          <div class="form-group">
-            <label>Review Text</label>
-            <textarea style="height:100px" onchange="updateDeepValue('testimonials.items[${i}].text',this.value)">${item.text||''}</textarea>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div class="form-group">
-              <label>Customer Name</label>
-              <input type="text" value="${item.name||item.author||''}"
-                onchange="updateDeepValue('testimonials.items[${i}].name',this.value)">
-            </div>
-            <div class="form-group">
-              <label>Stars (1–5)</label>
-              <input type="number" min="1" max="5" value="${stars}"
-                onchange="updateDeepValue('testimonials.items[${i}].stars',parseInt(this.value))">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Location / Tour Taken</label>
-            <input type="text" value="${item.meta||''}"
-              onchange="updateDeepValue('testimonials.items[${i}].meta',this.value)">
-          </div>
-          <div class="form-group">
-            <label>Avatar Image URL (optional)</label>
-            <input type="text" value="${item.avatar||item.image||''}"
-              onchange="updateDeepValue('testimonials.items[${i}].avatar',this.value)">
-          </div>`;
-        grid.appendChild(c);
+    function renderDestEditor(c) {
+      if (!siteData.destinations) siteData.destinations = {};
+      const s = siteData.destinations;
+      if (!s.items) s.items = [];
+      c.innerHTML = `<div class="card"><div class="card-title">Destinations</div></div><div class="items-grid" id="dest-g"></div>`;
+      const g = document.getElementById('dest-g');
+      s.items.forEach((it, i) => {
+        const src = it.image || it.img || '';
+        const d = document.createElement('div'); d.className = 'card';
+        d.innerHTML = `<div class="card-title">${it.title||'#'+(i+1)}<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="removeDeepItem('destinations.items',${i})">✕</button></div>
+          <div class="form-group"><label>Image</label><img src="${src}" id="di${i}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;background:#111;margin-bottom:8px"><input value="${src}" onchange="updateDeepValue('destinations.items[${i}].image',this.value);document.getElementById('di${i}').src=this.value"><input type="file" id="df${i}" class="hidden" onchange="handleUploadDirect(this.files[0],u=>{updateDeepValue('destinations.items[${i}].image',u);renderActiveTab()})"><button class="btn btn-outline" style="width:100%;margin-top:6px;font-size:11px" onclick="document.getElementById('df${i}').click()">📤 Upload</button></div>
+          <div class="form-group"><label>Title</label><input value="${it.title||''}" onchange="updateDeepValue('destinations.items[${i}].title',this.value)"></div>
+          <div class="form-group"><label>Type</label><input value="${it.type||''}" onchange="updateDeepValue('destinations.items[${i}].type',this.value)"></div>
+          <div class="form-group"><label>Region</label><input value="${it.region||''}" onchange="updateDeepValue('destinations.items[${i}].region',this.value)"></div>
+          <div class="form-group"><label>Duration</label><input value="${it.duration||''}" onchange="updateDeepValue('destinations.items[${i}].duration',this.value)"></div>
+          <div class="form-group"><label>Slug</label><input value="${it.slug||''}" onchange="updateDeepValue('destinations.items[${i}].slug',this.value)"></div>`;
+        g.appendChild(d);
       });
-
-      const addBtn = document.createElement('button');
-      addBtn.className = 'btn btn-primary'; addBtn.style.marginTop = '24px';
-      addBtn.textContent = '+ Add Testimonial';
-      addBtn.onclick = () => { items.push({ text: '', name: '', meta: '', stars: 5, avatar: '' }); renderActiveTab(); };
-      container.appendChild(grid);
-      container.appendChild(addBtn);
+      const btn = document.createElement('button'); btn.className='btn btn-primary'; btn.style.marginTop='20px'; btn.textContent='+ Add Destination';
+      btn.onclick=()=>{s.items.push({title:'',type:'',region:'',duration:'',image:'',slug:''});renderActiveTab();}; c.appendChild(btn);
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    //  STATS EDITOR  — siteData.stats[{number,suffix,label}]
-    // ══════════════════════════════════════════════════════════════════════
-    function renderStatsEditor(container) {
-      if (!siteData.stats || !Array.isArray(siteData.stats)) siteData.stats = [];
-      const items = siteData.stats;
-
-      const info = document.createElement('div'); info.className = 'card';
-      info.innerHTML = `<div class="card-title">Vital Stats</div>
-        <p style="color:var(--text-muted);margin-bottom:0;font-size:14px">
-          These numbers animate on the homepage (e.g. "500 + Safaris Completed"). 
-          Set <b>Number</b> to the target value, <b>Suffix</b> for symbols like <b>+</b> or <b>K</b>, and <b>Label</b> for the description.
-        </p>`;
-      container.appendChild(info);
-
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px';
-
-      items.forEach((item, i) => {
-        const c = document.createElement('div'); c.className = 'card';
-        c.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div style="font-family:Outfit;font-size:28px;font-weight:700;color:var(--primary)">${item.number||0}${item.suffix||''}</div>
-            <button class="btn btn-danger" style="padding:4px 10px;font-size:11px"
-              onclick="removeDeepItem('stats',${i})">✕</button>
-          </div>
-          <div class="form-group">
-            <label>Number (e.g. 500)</label>
-            <input type="number" value="${item.number||0}"
-              onchange="updateDeepValue('stats[${i}].number',parseInt(this.value)||0)">
-          </div>
-          <div class="form-group">
-            <label>Suffix (e.g. + or K)</label>
-            <input type="text" value="${item.suffix||''}"
-              onchange="updateDeepValue('stats[${i}].suffix',this.value)">
-          </div>
-          <div class="form-group">
-            <label>Label (e.g. Safaris Completed)</label>
-            <input type="text" value="${item.label||''}"
-              onchange="updateDeepValue('stats[${i}].label',this.value)">
-          </div>`;
-        grid.appendChild(c);
+    function renderPkgEditor(c) {
+      if (!siteData.packages) siteData.packages = {};
+      const s = siteData.packages;
+      if (!s.items) s.items = [];
+      c.innerHTML = `<div class="card"><div class="card-title">Packages</div></div><div class="items-grid" id="pkg-g"></div>`;
+      const g = document.getElementById('pkg-g');
+      s.items.forEach((it, i) => {
+        const src = it.image || it.img || '';
+        const d = document.createElement('div'); d.className = 'card';
+        d.innerHTML = `<div class="card-title">${it.title||'#'+(i+1)}<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="removeDeepItem('packages.items',${i})">✕</button></div>
+          <div class="form-group"><label>Image</label><img src="${src}" id="pi${i}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;background:#111;margin-bottom:8px"><input value="${src}" onchange="updateDeepValue('packages.items[${i}].image',this.value);document.getElementById('pi${i}').src=this.value"><input type="file" id="pf${i}" class="hidden" onchange="handleUploadDirect(this.files[0],u=>{updateDeepValue('packages.items[${i}].image',u);renderActiveTab()})"><button class="btn btn-outline" style="width:100%;margin-top:6px;font-size:11px" onclick="document.getElementById('pf${i}').click()">📤 Upload</button></div>
+          <div class="form-group"><label>Title</label><input value="${it.title||''}" onchange="updateDeepValue('packages.items[${i}].title',this.value)"></div>
+          <div class="form-group"><label>Type</label><input value="${it.type||''}" onchange="updateDeepValue('packages.items[${i}].type',this.value)"></div>
+          <div class="form-group"><label>Description</label><textarea onchange="updateDeepValue('packages.items[${i}].description',this.value)">${it.description||it.desc||''}</textarea></div>
+          <div class="form-group"><label>Duration</label><input value="${it.duration||''}" onchange="updateDeepValue('packages.items[${i}].duration',this.value)"></div>
+          <div class="form-group"><label>Group Size</label><input value="${it.groupSize||''}" onchange="updateDeepValue('packages.items[${i}].groupSize',this.value)"></div>
+          <div class="form-group"><label>Difficulty</label><input value="${it.difficulty||''}" onchange="updateDeepValue('packages.items[${i}].difficulty',this.value)"></div>
+          <div class="form-group"><label>Price</label><input value="${it.price||''}" onchange="updateDeepValue('packages.items[${i}].price',this.value)"></div>
+          <div class="form-group"><label>Price Note</label><input value="${it.priceNote||''}" onchange="updateDeepValue('packages.items[${i}].priceNote',this.value)"></div>
+          <div class="form-group"><label>Slug</label><input value="${it.slug||''}" onchange="updateDeepValue('packages.items[${i}].slug',this.value)"></div>`;
+        g.appendChild(d);
       });
-
-      const addBtn = document.createElement('button');
-      addBtn.className = 'btn btn-primary'; addBtn.style.marginTop = '24px';
-      addBtn.textContent = '+ Add Stat';
-      addBtn.onclick = () => { items.push({ number: 0, suffix: '+', label: 'New Stat' }); renderActiveTab(); };
-      container.appendChild(grid);
-      container.appendChild(addBtn);
+      const btn = document.createElement('button'); btn.className='btn btn-primary'; btn.style.marginTop='20px'; btn.textContent='+ Add Package';
+      btn.onclick=()=>{s.items.push({title:'',type:'',description:'',duration:'',groupSize:'',difficulty:'',price:'',priceNote:'',image:'',slug:''});renderActiveTab();}; c.appendChild(btn);
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    //  HERO EDITOR  — siteData.hero.slides[{image/url, alt}]
-    // ══════════════════════════════════════════════════════════════════════
-    function renderHeroEditor(container) {
-      if (!siteData.hero) siteData.hero = { slides: [] };
-      const hero = siteData.hero;
-
-      const hCard = document.createElement('div'); hCard.className = 'card';
-      hCard.innerHTML = '<div class="card-title">Hero / Homepage Settings</div>';
-      ['heading','headingEm','sub','ctaLabel','ctaHref'].forEach(k => {
-        if (k in hero) hCard.appendChild(createField(k, hero[k]||'', v => hero[k] = v));
+    function renderPricingEditor(c) {
+      if (!siteData.pricing) siteData.pricing = {};
+      const s = siteData.pricing;
+      if (!s.plans) s.plans = [];
+      c.innerHTML = `<div class="card"><div class="card-title">Pricing Plans</div></div><div class="items-grid" id="pr-g"></div>`;
+      const g = document.getElementById('pr-g');
+      s.plans.forEach((p, i) => {
+        const feats = (p.features||[]).map(f => typeof f==='string'?f:f.text).join('\n');
+        const d = document.createElement('div'); d.className = 'card';
+        d.innerHTML = `<div class="card-title">${p.name||'Plan '+(i+1)}<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="removeDeepItem('pricing.plans',${i})">✕</button></div>
+          <div class="form-group"><label>Name</label><input value="${p.name||''}" onchange="updateDeepValue('pricing.plans[${i}].name',this.value)"></div>
+          <div class="form-group"><label>Description</label><textarea onchange="updateDeepValue('pricing.plans[${i}].description',this.value)">${p.description||p.desc||''}</textarea></div>
+          <div class="form-group"><label>Currency</label><input value="${p.currency||''}" onchange="updateDeepValue('pricing.plans[${i}].currency',this.value)"></div>
+          <div class="form-group"><label>Price</label><input value="${p.price||''}" onchange="updateDeepValue('pricing.plans[${i}].price',this.value)"></div>
+          <div class="form-group"><label>Period</label><input value="${p.period||''}" onchange="updateDeepValue('pricing.plans[${i}].period',this.value)"></div>
+          <div class="form-group"><label>Recommended?</label><select onchange="updateDeepValue('pricing.plans[${i}].recommended',this.value==='yes')"><option value="no"${p.recommended?'':' selected'}>No</option><option value="yes"${p.recommended?' selected':''}>Yes</option></select></div>
+          <div class="form-group"><label>Features (one per line)</label><textarea style="height:140px" onchange="updateDeepValue('pricing.plans[${i}].features',this.value.split('\\n').filter(x=>x.trim()).map(x=>({text:x.trim(),included:true})))">${feats}</textarea></div>`;
+        g.appendChild(d);
       });
-      container.appendChild(hCard);
-
-      const h3 = document.createElement('h3');
-      h3.style.cssText = 'color:var(--primary);margin:32px 0 16px;font-family:Outfit';
-      h3.textContent = 'Background Slides';
-      container.appendChild(h3);
-
-      const slides = Array.isArray(hero.slides) ? hero.slides : (hero.items || []);
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px';
-
-      slides.forEach((slide, i) => {
-        const imgSrc = slide.image || slide.url || slide.src || '';
-        const c = document.createElement('div'); c.className = 'card'; c.style.padding = '0'; c.style.overflow = 'hidden';
-        c.innerHTML = `
-          <div style="position:relative">
-            <img src="${imgSrc}" id="hero-img-${i}"
-              style="width:100%;height:160px;object-fit:cover;display:block;background:#111">
-            <button class="btn btn-danger" style="position:absolute;top:8px;right:8px;padding:4px 10px;font-size:11px"
-              onclick="removeDeepItem('hero.slides',${i})">✕</button>
-          </div>
-          <div style="padding:16px">
-            <div class="form-group">
-              <label>Image URL</label>
-              <input type="text" value="${imgSrc}"
-                onchange="updateDeepValue('hero.slides[${i}].image',this.value);document.getElementById('hero-img-${i}').src=this.value">
-            </div>
-            <div class="form-group">
-              <input type="file" id="hero-file-${i}" class="hidden" accept="image/*"
-                onchange="handleUploadDirect(this.files[0],url=>{updateDeepValue('hero.slides[${i}].image',url);renderActiveTab();})">
-              <button class="btn btn-outline" style="width:100%;font-size:12px"
-                onclick="document.getElementById('hero-file-${i}').click()">📤 Upload</button>
-            </div>
-            <div class="form-group">
-              <label>Alt Text</label>
-              <input type="text" value="${slide.alt||''}"
-                onchange="updateDeepValue('hero.slides[${i}].alt',this.value)">
-            </div>
-          </div>`;
-        grid.appendChild(c);
-      });
-
-      const addCard = document.createElement('div');
-      addCard.className = 'card';
-      addCard.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;border-style:dashed;gap:10px';
-      addCard.innerHTML = `<div style="font-size:36px;opacity:0.3">🖼️</div>
-        <input type="file" id="hero-add-file" class="hidden" accept="image/*"
-          onchange="handleUploadDirect(this.files[0],url=>{if(!siteData.hero.slides)siteData.hero.slides=[];siteData.hero.slides.push({image:url,alt:''});renderActiveTab();})">
-        <button class="btn btn-primary" onclick="document.getElementById('hero-add-file').click()">+ Upload Slide</button>
-        <button class="btn btn-outline" onclick="if(!siteData.hero.slides)siteData.hero.slides=[];siteData.hero.slides.push({image:'',alt:''});renderActiveTab()">+ Add by URL</button>`;
-      grid.appendChild(addCard);
-      container.appendChild(grid);
+      const btn = document.createElement('button'); btn.className='btn btn-primary'; btn.style.marginTop='20px'; btn.textContent='+ Add Plan';
+      btn.onclick=()=>{s.plans.push({name:'',description:'',currency:'₹',price:'',period:'/person',recommended:false,features:[]});renderActiveTab();}; c.appendChild(btn);
     }
 
     // ══════════════════════════════════════════════════════════════════════
-    //  GENERIC TAB — for site, navbar, about, cta, footer, etc.
-    // ══════════════════════════════════════════════════════════════════════
-    function renderGenericTab(container, data, path) {
-      function renderObj(obj, objPath, parent) {
-        const card = document.createElement('div'); card.className = 'card';
-        card.innerHTML = `<div class="card-title">${objPath.split('.').pop().toUpperCase()} Settings</div>`;
-        for (const key in obj) {
-          const val = obj[key];
-          if (Array.isArray(val)) {
-            // skip complex arrays in generic view — they need dedicated editors
-            continue;
-          } else if (val !== null && typeof val === 'object') {
-            parent.appendChild(card);
-            const sub = document.createElement('h3');
-            sub.style.cssText = 'color:var(--primary);margin:32px 0 12px;font-family:Outfit;font-size:16px';
-            sub.textContent = key.toUpperCase();
-            parent.appendChild(sub);
-            renderObj(val, `${objPath}.${key}`, parent);
-            return;
-          } else {
-            card.appendChild(createField(key, val, v => updateDeepValue(`${objPath}.${key}`, v)));
-          }
-        }
-        parent.appendChild(card);
-      }
-      renderObj(data, path, container);
+    function renderStoriesEditor(c) {
+      if (!siteData.stories) siteData.stories = {};
+      const s = siteData.stories;
+      if (!s.items) s.items = [];
+      c.innerHTML = `<div class="card"><div class="card-title">Web Stories</div></div><div class="items-grid" id="st-g"></div>`;
+      const g = document.getElementById('st-g');
+      s.items.forEach((it, i) => {
+        const cover = it.coverImage || it.cover || it.image || '';
+        const slides = it.slides || [];
+        let slidesHtml = slides.map((sl, si) => {
+          const simg = sl.image || sl.src || '';
+          return `<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><img src="${simg}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;background:#111"><input value="${simg}" style="font-size:11px" onchange="updateDeepValue('stories.items[${i}].slides[${si}].image',this.value)"><button class="btn btn-danger" style="padding:2px 6px;font-size:10px" onclick="removeDeepItem('stories.items[${i}].slides',${si})">✕</button></div>`;
+        }).join('');
+        const d = document.createElement('div'); d.className = 'card';
+        d.innerHTML = `<div class="card-title">${it.title||'Story '+(i+1)}<button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="removeDeepItem('stories.items',${i})">✕</button></div>
+          <div class="form-group"><label>Cover Image</label><img src="${cover}" id="si${i}" style="width:100%;height:180px;object-fit:cover;border-radius:8px;background:#111;margin-bottom:8px"><input value="${cover}" onchange="updateDeepValue('stories.items[${i}].coverImage',this.value);document.getElementById('si${i}').src=this.value"><input type="file" id="sf${i}" class="hidden" onchange="handleUploadDirect(this.files[0],u=>{updateDeepValue('stories.items[${i}].coverImage',u);renderActiveTab()})"><button class="btn btn-outline" style="width:100%;margin-top:6px;font-size:11px" onclick="document.getElementById('sf${i}').click()">📤 Upload Cover</button></div>
+          <div class="form-group"><label>Title</label><input value="${it.title||''}" onchange="updateDeepValue('stories.items[${i}].title',this.value)"></div>
+          <div class="form-group"><label>Label</label><input value="${it.label||''}" onchange="updateDeepValue('stories.items[${i}].label',this.value)"></div>
+          <div class="form-group"><label>Slides (${slides.length})</label>${slidesHtml}<button class="btn btn-outline" style="font-size:11px;margin-top:4px" onclick="if(!siteData.stories.items[${i}].slides)siteData.stories.items[${i}].slides=[];siteData.stories.items[${i}].slides.push({image:''});renderActiveTab()">+ Add Slide</button></div>`;
+        g.appendChild(d);
+      });
+      const btn = document.createElement('button'); btn.className='btn btn-primary'; btn.style.marginTop='20px'; btn.textContent='+ Add Story';
+      btn.onclick=()=>{s.items.push({title:'',label:'',coverImage:'',slides:[]});renderActiveTab();}; c.appendChild(btn);
     }
 
     // ═══════════════════════════════════════════════════════ BLOG HANDLERS
@@ -630,25 +503,6 @@
       if (!siteData.blog) siteData.blog = { sectionTitle: 'From the Wild', posts: [] };
       if (!siteData.blog.posts) siteData.blog.posts = [];
       return siteData.blog.posts;
-    }
-
-    function renderBlogSection(container) {
-      const posts = getBlogPosts();
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `<div class="card-title">Home Blog Settings</div>`;
-      card.appendChild(createField('Section Title', siteData.blog.sectionTitle, v => siteData.blog.sectionTitle = v));
-      container.appendChild(card);
-
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px';
-      posts.forEach((p, i) => {
-        const c = document.createElement('div');
-        c.className = 'card'; c.style.padding = '0'; c.style.overflow = 'hidden';
-        c.innerHTML = `<img src="${p.image}" style="width:100%;height:140px;object-fit:cover"><div style="padding:15px"><strong>${p.title || 'Untitled'}</strong><br><button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="activeBlogIndex=${i}; currentTab='blogposts'; renderActiveTab()">Edit Post</button></div>`;
-        grid.appendChild(c);
-      });
-      container.appendChild(grid);
     }
 
     function renderBlogEditor(container) {
